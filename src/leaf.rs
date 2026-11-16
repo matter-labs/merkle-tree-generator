@@ -39,7 +39,7 @@ pub fn load_leaves_csv(path: impl AsRef<Path>) -> anyhow::Result<Vec<Leaf>> {
         .collect()
 }
 
-mod decimal_u256 {
+pub(crate) mod decimal_u256 {
     use alloy_primitives::U256;
     use serde::{Deserialize, Deserializer, Serializer, de::Error};
 

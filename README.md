@@ -46,3 +46,12 @@ let tree = merkle_tree_generator::ClaimTree::new(merkle_tree_generator::load_lea
 let proof = tree.proof(account, token)?;
 assert!(merkle_tree_generator::verify_proof(proof.leaf, &proof.merkle_path, tree.root()));
 ```
+
+## Tests
+
+`tests/mainnet.rs` checks real proofs from the ZKsync Lite exit tree against the `MERKLE_ROOT` of the mainnet claim
+distributor `0x0a14b696350546110a0d8acdb86226983af9d2a0`. Rebuilding the full tree (16.6M leaves) is ignored by default:
+
+```bash
+MAINNET_LEAVES_CSV=new_leaves.csv cargo test --release -- --ignored
+```

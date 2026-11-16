@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use alloy_primitives::{Address, B256, keccak256};
+use alloy_primitives::{Address, B256, U256, keccak256};
 use anyhow::{Context, ensure};
 use rs_merkle::{Hasher, MerkleTree};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::leaf::Leaf;
 
@@ -33,13 +33,14 @@ impl Hasher for SortedPairKeccak {
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Proof {
     pub claim_index: u64,
     pub account_address: Address,
     pub token_address: Address,
-    pub balance: String,
+    #[serde(with = "crate::leaf::decimal_u256")]
+    pub balance: U256,
     pub merkle_root: B256,
     pub merkle_path: Vec<B256>,
     pub leaf: B256,
@@ -96,7 +97,7 @@ impl ClaimTree {
             claim_index: leaf.claim_index,
             account_address: leaf.account_address,
             token_address: leaf.token_address,
-            balance: leaf.balance.to_string(),
+            balance: leaf.balance,
             merkle_root: self.root(),
             merkle_path: self
                 .tree
